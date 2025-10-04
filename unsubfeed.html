@@ -5,12 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Unsubscribe</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    .unsubscribe-box { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 400px; }
-    h2 { margin-bottom: 15px; color: #333; }
-    textarea, select, button { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
-    button { background: #d9534f; color: #fff; border: none; cursor: pointer; }
+    body { font-family: Arial, sans-serif; background: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .unsubscribe-box { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 400px; max-width: 90%; }
+    h2 { margin-bottom: 15px; color: #333; text-align: center; }
+    label { display: block; margin-top: 10px; margin-bottom: 5px; color: #555; font-size: 14px; }
+    textarea, select, button { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; } /* box-sizing: border-box for consistent width */
+    button { background: #d9534f; color: #fff; border: none; cursor: pointer; padding: 12px; margin-top: 20px; }
     button:hover { background: #c9302c; }
+    .message { text-align: center; margin-top: 15px; font-weight: bold; }
+    .success { color: green; }
+    .error { color: red; }
   </style>
 </head>
 <body>
@@ -18,8 +22,10 @@
     <h2>Unsubscribe</h2>
     <p>We're sorry to see you go. Please let us know why you're unsubscribing:</p>
     
-    <form action="https://n8n-derik.bluecape.site/webhook/3f2c9b03-cbb0-415d-aa2f-dc61d9c7301d" method="POST">
+
+    <form id="unsubscribeForm">
       <input type="hidden" id="email" name="email" value="">
+      
       <label for="reason">Reason:</label>
       <select name="reason" id="reason" required>
         <option value="">-- Select a reason --</option>
@@ -28,29 +34,80 @@
         <option value="prefer_other_channel">I prefer updates on WhatsApp/SMS</option>
         <option value="other">Other</option>
       </select>
+      
       <label for="comments">Additional Comments (optional):</label>
       <textarea name="comments" id="comments" rows="4" placeholder="Type here..."></textarea>
+      
       <button type="submit">Submit & Unsubscribe</button>
     </form>
+    
+    <div id="statusMessage" class="message"></div>
   </div>
+
   <script>
-    window.onload = function() {
+  
+
+    const n8nWebhookURL = 'https://n8n-derik.bluecape.site/webhook/3f2c9b03-cbb0-415d-aa2f-dc61d9c7301d';
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('unsubscribeForm');
+      const emailInput = document.getElementById('email');
+      const reasonSelect = document.getElementById('reason'); // id 'reason'
+      const commentsTextarea = document.getElementById('comments'); // id 'comments'
+      const statusMessage = document.getElementById('statusMessage');
+
+   
       const urlParams = new URLSearchParams(window.location.search);
-      const email = urlParams.get('email');
-      if (email) {
-        document.getElementById('email').value = email;
+      const emailFromUrl = urlParams.get('email'); 
+      
+      if (emailFromUrl) {
+        emailInput.value = emailFromUrl;
+      } else {
+      
+        statusMessage.textContent = 'Error: Email not found in the URL. Cannot unsubscribe.';
+        statusMessage.className = 'message error';
+        form.querySelector('button[type="submit"]').disabled = true; ்
+        console.error('Email parameter not found in URL.');
       }
-    };
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault(); 
+
+       
+        const formData = {
+          email: emailInput.value,
+          reason: reasonSelect.value,
+          comments: commentsTextarea.value
+        };
+
+   
+        fetch(n8nWebhookURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json', 
+          },
+          body: JSON.stringify(formData) 
+        })
+        .then(response => {
+      
+          if (response.redirected) {
+         
+            window.location.href = response.url;
+          } else {
+            
+            statusMessage.textContent = 'You have successfully unsubscribed!';
+            statusMessage.className = 'message success';
+            form.reset(); 
+            form.querySelector('button[type="submit"]').disabled = true; 
+          }
+        })
+        .catch(error => {
+          console.error('Error during unsubscribe:', error);
+          statusMessage.textContent = 'An error occurred during unsubscribe. Please try again.';
+          statusMessage.className = 'message error';
+        });
+      });
+    });
   </script>
 </body>
-
 </html>
-
-
-
-
-
-
-
-
-
