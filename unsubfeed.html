@@ -21,24 +21,27 @@
     <h2>Unsubscribe</h2>
     <p>We're sorry to see you go. Please let us know why you're unsubscribing:</p>
     
-    <form action="https://n8n-derik.bluecape.site/webhook/3f2c9b03-cbb0-415d-aa2f-dc61d9c7301d" method="POST">
-      <!-- Hidden input for email. This will be populated by JavaScript from the URL. -->
-      <input type="hidden" id="email" name="email" value="">
+<form action="https://n8n-derik.bluecape.site/webhook/3f2c9b03-cbb0-415d-aa2f-dc61d9c7301d" method="POST">
+    <p>We're sorry to see you go. Please let us know why you're unsubscribing:</p>
 
-      <label for="reason">Reason:</label>
-      <select name="reason" id="reason" required>
+    <label for="reason">Reason:</label>
+    <select id="reason" name="reason">
         <option value="">-- Select a reason --</option>
-        <option value="too_many_emails">I receive too many emails</option>
-        <option value="not_relevant">Content is not relevant to me</option>
-        <option value="prefer_other_channel">I prefer updates on WhatsApp/SMS</option>
-        <option value="other">Other</option>
-      </select>
+        <option value="Too many emails">Too many emails</option>
+        <option value="Not relevant content">Not relevant content</option>
+        <option value="No longer interested">No longer interested</option>
+        <option value="Other">Other</option>
+    </select>
+    <br><br>
 
-      <label for="comments">Additional Comments (optional):</label>
-      <textarea name="comments" id="comments" rows="4" placeholder="Type here..."></textarea>
-      
-      <button type="submit">Submit & Unsubscribe</button>
-    </form>
+    <label for="comments">Additional Comments (optional):</label>
+    <textarea id="comments" name="comments" rows="4" cols="50"></textarea>
+    <br><br>
+
+    <input type="hidden" name="email" value="USER_EMAIL_ADDRESS_HERE">
+
+    <button type="submit">Submit & Unsubscribe</button>
+</form>
   </div>
 
   <script>
@@ -61,3 +64,4 @@
   </script>
 </body>
 </html>
+
