@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Unsubscribe</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    .unsubscribe-box { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 400px; }
-    h2 { margin-bottom: 15px; color: #333; }
-    textarea, select, button { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
-    button { background: #d9534f; color: #fff; border: none; cursor: pointer; }
+    body { font-family: Arial, sans-serif; background: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .unsubscribe-box { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 400px; max-width: 90%; }
+    h2 { margin-bottom: 15px; color: #333; text-align: center; }
+    p { margin-bottom: 20px; color: #666; text-align: center; }
+    label { display: block; margin-bottom: 5px; color: #333; font-weight: bold; }
+    textarea, select, button { width: calc(100% - 22px); /* Adjust for padding and border */ padding: 10px; margin: 8px 0 15px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+    button { background: #d9534f; color: #fff; border: none; cursor: pointer; padding: 12px; font-size: 16px; font-weight: bold; }
     button:hover { background: #c9302c; }
+    select:focus, textarea:focus, button:focus { outline: none; border-color: #66afe9; box-shadow: 0 0 8px rgba(102, 175, 233, 0.6); }
   </style>
 </head>
 <body>
@@ -19,7 +22,9 @@
     <p>We're sorry to see you go. Please let us know why you're unsubscribing:</p>
     
     <form action="https://n8n-derik.bluecape.site/webhook/3f2c9b03-cbb0-415d-aa2f-dc61d9c7301d" method="POST">
+      <!-- Hidden input for email. This will be populated by JavaScript from the URL. -->
       <input type="hidden" id="email" name="email" value="">
+
       <label for="reason">Reason:</label>
       <select name="reason" id="reason" required>
         <option value="">-- Select a reason --</option>
@@ -28,24 +33,31 @@
         <option value="prefer_other_channel">I prefer updates on WhatsApp/SMS</option>
         <option value="other">Other</option>
       </select>
+
       <label for="comments">Additional Comments (optional):</label>
       <textarea name="comments" id="comments" rows="4" placeholder="Type here..."></textarea>
+      
       <button type="submit">Submit & Unsubscribe</button>
     </form>
   </div>
+
   <script>
     window.onload = function() {
+      // Get the current URL's query parameters
       const urlParams = new URLSearchParams(window.location.search);
+      // Get the value of the 'email' parameter
       const email = urlParams.get('email');
+      
+      // If an email is found in the URL, populate the hidden input field
       if (email) {
         document.getElementById('email').value = email;
       }
+      // Optional: If no email is found, you might want to show an error or a message.
+      // else {
+      //   alert("Email address not found in URL. Please use the unsubscribe link from your email.");
+      //   // Optionally disable the form or redirect
+      // }
     };
   </script>
 </body>
-
 </html>
-
-
-
-
